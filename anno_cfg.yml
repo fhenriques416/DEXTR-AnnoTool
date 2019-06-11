@@ -1,0 +1,21 @@
+#-----------------------------------------------anno_cfg.yml------------------------------------------------------------
+# Summary:
+# - this is the YAML configuration file where the settings for annotation are stored.
+# - please edit the file accordingly to your annotation setup.
+#-----------------------------------------------------------------------------------------------------------------------
+
+# Required parameters to be set by user
+required:
+  source: ./ims    # path to the dir containing images to be annotated
+  destination: ./ims/segMasks    # path to the dir where the generated masks should be saved
+
+# Optional parameters
+optional:
+  update: false  # set to True if more images were added to source folder after initial run
+  mask_suffix: _mask  # e.g. if source file: img_01.jpg then mask file: img_01_mask.jpg
+  save_format: png  # supports npy and png, (jpg not ideal)
+
+# ADMIN parameters (CAUTION: Don't edit unless you are sure what you are doing)
+admin:
+  progress_file: .anno_prog   # file used for tracking annotation progress, saved in the source folder
+  reset_progress: false # set True to reset annotation progress i.e. to start over.
