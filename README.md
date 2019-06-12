@@ -1,24 +1,44 @@
-# Deep Extreme Cut (DEXTR)
-Visit our [project page](http://www.vision.ee.ethz.ch/~cvlsegmentation/dextr) for accessing the paper, and the pre-computed results.
+# Deep Extreme Cut (DEXTR) based Annotation tool
+is a simple matplotlib-based annotation UI that can be used for extracting segmention masks for images. The main advantage of using this tool is the speed of annotation, as even for complex objects (e.g. the animals in the following image) the segmentation masks can be acquired by annotating only the four extreme points (left-most, right-most, top and bottom) for that object.
+
+<p align="center"><img src="doc/github_teaser.gif" align="center" width=480 height=auto/></p>
+
+This repository builds on the original work of [scaelles/DEXTR-KerasTensorflowPyTorch](https://github.com/scaelles/DEXTR-KerasTensorflow) by providing extra code that converts their demo code into a simple and elegant user-interface for annotating segmentation masks. The tool can be invoked from the command line and offers tracking of annotation progress between subsequent runs i.e. for a given source images folder, it can track which images have already been annotated. The resulting segmentation masks can be saved either as png or as numpy array (.npy) files. 
+
+
+## Deep Extreme Cut (DEXTR)
+The `DEXTR` code used in this fork is a Keras+TensorFlow based reimplementation of original [PyTorch](https://github.com/scaelles/DEXTR-PyTorch) code by the same authors. More information on `(DEXTR)` can be found on the associated [project page](http://www.vision.ee.ethz.ch/~cvlsegmentation/dextr). A short summary is presented below: 
 
 ![DEXTR](doc/dextr.png)
 
-This is the re-implementation of our work `Deep Extreme Cut (DEXTR)`, for object segmentation from extreme points. Only testing is available, if you would like to train use our original [PyTorch](https://github.com/scaelles/DEXTR-PyTorch) repository.
-
-### Abstract
-This paper explores the use of extreme points in an object (left-most, right-most, top, bottom pixels) as input to obtain precise object segmentation for images and videos. We do so by adding an extra channel to the image in the input of a convolutional neural network (CNN), which contains a Gaussian centered in each of the extreme points. The CNN learns to transform this information into a segmentation of an object that matches those extreme points. We demonstrate the usefulness of this approach for guided segmentation (grabcut-style), interactive segmentation, video object segmentation, and dense segmentation annotation. We show that we obtain the most precise results to date, also with less user input, in an extensive and varied selection of benchmarks and datasets.
-
-### Installation
-The code was tested with [Miniconda](https://conda.io/miniconda.html) and Python 3.6. After installing the Miniconda environment:
+### Summary
+`DEXTR` is a deep-learning based approach to obtain precise object segmentation in images and videos. To achieve the same, it follows a semi-automatic approach where (usually) user-defined object extreme points are added as an extra channel to an image before it is input into a convolutional neural network (CNN). The CNN learns to transform this information into a segmentation of an object that matches those extreme points. This approach is thus higly useful for guided segmentation (grabcut-style), interactive segmentation, video object segmentation, and dense segmentation annotation.
 
 
-0. Clone the repo:
+## Annotation Tool
+The annotation tool is a simple and elegant matplotlib-based User-Interface (UI) that allows users to easily and interactively annotate images to obtain object segmentation masks for the same. The offers following features:
+- easy modification of settings using a YAML-based configuration file.
+- ability to annotate extreme points for multiple objects in a image.
+- visualization of results for each object during annotation.
+- ability to redo annotation if object results are not correct or if wrong points were selected.
+- multiple images can be annotated in a session.
+- progress tracking across sessions. Thus, only images that were not previously annotated are shown during subsequent runs.
+- etc.
+
+More details on the diffrent settings and using the annotation tool are provided in the later sections. 
+
+
+## Setup
+It is good practice to work with virtual environments when trying out new code. So please setup a virtual environment using either Python directly or Anaconda, as you our prefer. The code here was developed and tested using [Anaconda](https://docs.anaconda.com/anaconda/) with Python version 3.6. After setting up your environment:
+
+0. Clone this repo:
     ```Shell
-    git clone https://github.com/scaelles/DEXTR-KerasTensorflow
-    cd DEXTR-KerasTensorflow
+    git clone https://github.com/karan-shr/DEXTR-AnnoTool
+    cd DEXTR-AnnoTool
     ```
  
-1. Install dependencies:
+1. Install dependencies listed in the reqPackages.txt file:
+    If using anaconda then	
     ```Shell
     conda install matplotlib opencv pillow scikit-learn scikit-image h5py
     ```
@@ -49,8 +69,6 @@ The code was tested with [Miniconda](https://conda.io/miniconda.html) and Python
     ```Shell
     CUDA_VISIBLE_DEVICES=0 python demo.py
     ```
-If installed correctly, the result should look like this:
-<p align="center"><img src="doc/github_teaser.gif" align="center" width=480 height=auto/></p>
 
 Enjoy!!
 
