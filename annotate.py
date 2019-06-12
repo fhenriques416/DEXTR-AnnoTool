@@ -15,7 +15,6 @@ from keras import backend as K
 from networks.dextr import DEXTR
 from mypath import Path
 from helpers import helpers as helpers
-# agile defined
 from helpers import annotools as tools
 
 modelName = 'dextr_pascal-sbd'

@@ -29,13 +29,20 @@ More details on the different settings and using the annotation tool are provide
 
 
 ## Setup
-It is good practice to work with virtual environments when trying out new code. So please setup a virtual environment using either Python directly or Anaconda, as you our prefer. The code here was developed and tested using [Anaconda](https://docs.anaconda.com/anaconda/) with Python version 3.6. After setting up your environment:
+It is good practice to work with virtual environments when trying out new code. So please setup a virtual environment using either Python directly or Anaconda, as you prefer. The code here was developed and tested using [Anaconda](https://docs.anaconda.com/anaconda/) with Python version 3.6, so we suggest you to do the same. The simplest way to get started is to follow the instructions below.
 
 0. Clone this repo:
     ```Shell
     git clone https://github.com/karan-shr/DEXTR-AnnoTool
     cd DEXTR-AnnoTool
     ```
+
+1. Setting up the environment:
+   ```Shell
+   conda env create -n dextr_annotool -f conda_env.yml
+   ```
+   Where `dextr_annotool` is the name of the environment, change it if required, and `conda_env.yml` is the accompanying conda environment file. If you are using pip or installing packages manually, pay attention to the package versions. 
+
  
 1. Install dependencies listed in the reqPackages.txt file:
 
