@@ -63,6 +63,7 @@ It is good practice to work with virtual environments when trying out new code. 
 
 4. To starting annotating your dataset, modify the `anno_cfg.yml` configuration file accordingly and run the command mentioned in point 3 and you are good to go... 
 
+## Annotation Tool Configuration
 
 ## More information related to DEXTR
 
@@ -73,7 +74,7 @@ We provide the following DEXTR models, pre-trained on:
   * [COCO](https://data.vision.ee.ethz.ch/csergi/share/DEXTR/dextr_coco.h5), trained on COCO train 2014 (82783 images). Achieves mIoU of 87.8% on PASCAL VOC Segmentation val.
 
 ### Citation
-This annotation tool wouldn't have been possible without the excellent work on DEXTR by the team at ETH-Zurick. Please consider citing their following work if you use this tool:
+This annotation tool wouldn't have been possible without the excellent work on DEXTR by the team at ETH-Zurich. Please consider citing their following work if you use this tool:
 
 	@Inproceedings{Man+18,
 	  Title          = {Deep Extreme Cut: From Extreme Points to Object Segmentation},
