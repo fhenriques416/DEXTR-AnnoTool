@@ -6,6 +6,7 @@ from os import path, makedirs, listdir
 from PIL import Image
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import gridspec
 
 import tensorflow as tf
 from keras import backend as K
@@ -67,16 +68,37 @@ if __name__ == "__main__":
                 _ANNOwrong = False
 
                 # setup annotation UI
-                plt.switch_backend('TkAgg') # force 'TkAgg' backend
-                ui = plt.figure('Annotation Interface')
+                if not _ANNOinit:
+                    plt.switch_backend('TkAgg') # force 'TkAgg' backend
+                    ui = plt.figure('Annotation Interface')
+                    ui.tight_layout()
+
+                # maximize window and setup interactive mode
                 manager = plt.get_current_fig_manager()
                 manager.resize(*manager.window.maxsize())
                 plt.ion()
-                plt.axis('off')
-                plt.imshow(image)
-                plt.title('Instructions: Click the following four extreme points (in any order) of the objects:\n'
-                          ' the left-,right-,top- and the bottom-most points for an object\n\n'
-                          'Tips: View status messages at bottom to see status and/or next required action')
+                # setup gridspec
+                gs = gridspec.GridSpec(2, 2, width_ratios=[5,1], height_ratios=[11,1])
+                # setup window for images
+                ui_img = ui.add_subplot(gs[0])
+                ui_img.axis('off')
+                ui_img.imshow(image)
+                # window for annotation instructions
+                ui_instruct = ui.add_subplot(gs[1])
+                ui_instruct.axis('off')
+                instruct_msg = ui_instruct.text(0, 0,
+                                                'Instructions:\n1. Use the left mouse button to select the following'
+                                                ' four extreme points for an object in the image:\n-left,'
+                                                '\n-right,\n-top, and\n-bottom.\n2. In case of misselection, use'
+                                                ' right mouse button to undo.\n3. When the 4 points are selected,'
+                                                ' the resulting masks are overlayed.\n4. Status messages are '
+                                                'displayed at bottom of the image; perform next actions based on'
+                                                'them.', fontsize = 14, wrap = True,
+                                                transform = ui_instruct.transAxes)
+
+                ui_status = ui.add_subplot(gs[2]) # window for displaying status
+                ui_status.axis('off')
+
 
                 # hold predictions from image
                 image_results = []
@@ -85,16 +107,16 @@ if __name__ == "__main__":
                 while True:
 
                     if not _ANNOinit:
-                        ui_msg = plt.text(0.0, image.shape[0] + 20, 'Start annotation...', color='green', fontsize=14)
+                        ui_msg = ui_status.text(0.0, 0.0, 'Start annotation...', color='green', fontsize=14)
                         _ANNOinit = True
 
                     elif _ANNOinit:
                         if not _ANNOwrong:
-                            ui_msg = plt.text(0.0, image.shape[0] + 20, 'Continue annotation...', color='green',
+                            ui_msg = ui_status.text(0.0, 0.0, 'Continue annotation...', color='green',
                                              fontsize=14)
                         elif _ANNOwrong:
-                            plt.imshow(helpers.overlay_masks(image / 255, image_results))
-                            ui_msg = plt.text(0.0, image.shape[0] + 20, 'Ok. redo annotation...', color='green',
+                            ui_img.imshow(helpers.overlay_masks(image / 255, image_results))
+                            ui_msg = ui_status.text(0.0, 0.0, 'Ok. redo annotation...', color='green',
                                              fontsize=14)
                             _ANNOwrong = False
 
@@ -123,8 +145,8 @@ if __name__ == "__main__":
 
                     # Mask correct or not
                     image_results.append(result)  # add result to list of results even if incorrect for vis purposes
-                    plot_mask = plt.imshow(helpers.overlay_masks(image / 255, image_results))
-                    ui_msg = plt.text(0.0, image.shape[0] + 20, 'Is the generated mask correct? Click mouse for yes,'
+                    plot_mask = ui_img.imshow(helpers.overlay_masks(image / 255, image_results))
+                    ui_msg = ui_status.text(0.0, 0.0, 'Is the generated mask correct? Click mouse for yes,'
                                                  ' press r to redo', color='orange', fontsize=14)
                     not_anno_correct = plt.waitforbuttonpress()
                     ui_msg.remove()
@@ -137,7 +159,7 @@ if __name__ == "__main__":
                     # Add extreme points to show annotation done for the object
                     plt.plot(extreme_points_ori[:, 0], extreme_points_ori[:, 1], 'gx')
                     # Check what user wants to do next
-                    ui_msg = plt.text(0.0, image.shape[0] + 20,
+                    ui_msg = ui_status.text(0.0, 0.0,
                                                  'Next...Press d if done annotating this image or click mouse to'
                                                  ' continue annotating more objects in this image', color='orange',
                                       fontsize=14)
@@ -145,7 +167,7 @@ if __name__ == "__main__":
                     ui_msg.remove()
 
                     if usr_choice:  # if user presses d then break
-                        ui_msg = ui.text(0.0, image.shape[0] + 20, 'Annotation of this image stopped, mask image saved'
+                        ui_msg = ui.text(0.0, 0.0, 'Annotation of this image stopped, mask image saved'
                                                                    ' and progress updated', color='red', fontsize=14)
                         break
 

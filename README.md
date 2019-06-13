@@ -42,23 +42,6 @@ It is good practice to work with virtual environments when trying out new code. 
    conda env create -n dextr_annotool -f conda_env.yml
    ```
    Where `dextr_annotool` is the name of the environment, change it if required, and `conda_env.yml` is the accompanying conda environment file. If you are using pip or installing packages manually, pay attention to the package versions. 
-
- 
-1. Install dependencies listed in the reqPackages.txt file:
-
-    If using anaconda then	
-    ```Shell
-    conda install matplotlib opencv pillow scikit-learn scikit-image h5py
-    ```
-    For CPU mode:
-    ```Shell
-    pip install tensorflow keras
-    ```
-    For GPU mode (CUDA 9.0 and cuDNN 7.0 is required for the latest Tensorflow version. If you have CUDA 8.0 and cuDNN 6.0 installed, force the installation of the vesion 1.4 by using ```tensorflow-gpu==1.4```. More information [here](https://www.tensorflow.org/install/)):
-    ```Shell
-    pip install tensorflow-gpu keras
-    ```
-    
   
 2. Download the model by running the script inside ```models/```:
     ```Shell
@@ -67,27 +50,30 @@ It is good practice to work with virtual environments when trying out new code. 
     ./download_dextr_model.sh
     cd ..
     ```
-    The default model is trained on PASCAL VOC Segmentation train + SBD (10582 images). To download models trained on PASCAL VOC Segmentation train or COCO, please visit our [project page](http://www.vision.ee.ethz.ch/~cvlsegmentation/dextr/#downloads), or keep scrolling till the end of this README.
+    The default model is trained on PASCAL VOC Segmentation train + SBD (10582 images). To download models trained on PASCAL VOC Segmentation train or COCO, please visit the [project page](http://www.vision.ee.ethz.ch/~cvlsegmentation/dextr/#downloads). You can also manually download the models and place them in the models directory.
 
-3. To try the demo version of DEXTR, please run:
+3. To demo the Annotation UI, please run:
     ```Shell
-    python demo.py
+    python annotate.py -c anno_cfg.yml
     ```
     If you have multiple GPUs, you can specify which one should be used (for example gpu with id 0):
     ```Shell
-    CUDA_VISIBLE_DEVICES=0 python demo.py
+    CUDA_VISIBLE_DEVICES=0 python annotate.py -c anno_cfg.yml
     ```
 
-Enjoy!!
+4. To starting annotating your dataset, modify the `anno_cfg.yml` configuration file accordingly and run the command mentioned in point 3 and you are good to go... 
 
-### Pre-trained models
+
+## More information related to DEXTR
+
+### Pre-trained models for DEXTR
 We provide the following DEXTR models, pre-trained on:
   * [PASCAL + SBD](https://data.vision.ee.ethz.ch/csergi/share/DEXTR/dextr_pascal-sbd.h5), trained on PASCAL VOC Segmentation train + SBD (10582 images). Achieves mIoU of 91.5% on PASCAL VOC Segmentation val.
   * [PASCAL](https://data.vision.ee.ethz.ch/csergi/share/DEXTR/dextr_pascal.h5), trained on PASCAL VOC Segmentation train (1464 images). Achieves mIoU of 90.5% on PASCAL VOC Segmentation val.
   * [COCO](https://data.vision.ee.ethz.ch/csergi/share/DEXTR/dextr_coco.h5), trained on COCO train 2014 (82783 images). Achieves mIoU of 87.8% on PASCAL VOC Segmentation val.
 
 ### Citation
-If you use this code, please consider citing the following papers:
+This annotation tool wouldn't have been possible without the excellent work on DEXTR by the team at ETH-Zurick. Please consider citing their following work if you use this tool:
 
 	@Inproceedings{Man+18,
 	  Title          = {Deep Extreme Cut: From Extreme Points to Object Segmentation},
@@ -103,7 +89,4 @@ If you use this code, please consider citing the following papers:
 	  Year           = {2017}
 	}
 
-
-We thank the authors of [PSPNet-Keras-tensorflow](https://github.com/Vladkryvoruchko/PSPNet-Keras-tensorflow) for making their Keras re-implementation of PSPNet available!
-
-If you encounter any problems please contact us at {kmaninis, scaelles}@vision.ee.ethz.ch.
+If you encounter any problems please open an issue.
