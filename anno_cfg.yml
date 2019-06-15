@@ -11,7 +11,7 @@ required:
 
 # Optional parameters
 optional:
-  update: false  # set to True if more images were added to source folder after initial run
+  update: true  # set to True if more images were added to source folder after initial run
   mask_suffix: _mask  # e.g. if source file: img_01.jpg then mask file: img_01_mask.jpg
   save_format: png  # supports npy and png, (jpg not ideal)
 

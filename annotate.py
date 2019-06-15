@@ -6,6 +6,7 @@ from os import path
 from PIL import Image
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib.widgets import Button
 
 import tensorflow as tf
 from keras import backend as K
@@ -104,6 +105,11 @@ if __name__ == "__main__":
                 # window for displaying status
                 ui_status = ui.add_subplot(gs[2], sharey=ui_img)  # window for displaying status
                 ui_status.axis('off')
+
+                ui_button = ui.add_subplot(gs[3], sharex=ui_status, sharey=ui_instruct)
+                skip_button = Button(ui_button,'Skip Image')
+                skip_button.on_clicked(lambda x: continue))
+
 
                 # hold predictions from image
                 image_results = []
