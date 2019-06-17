@@ -74,7 +74,8 @@ if __name__ == "__main__":
 
                 # image level status flags
                 _ANNOinit = False
-                _ANNOwrong = False
+                _lastANNOwrong = False
+                _SKIP_IMAGE = False
 
                 # -----Setup figure for annotating -----
                 ui.clear()
@@ -100,16 +101,12 @@ if __name__ == "__main__":
                                                 '3. When the 4 points are selected, the\n'
                                                 'resulting masks are overlayed.\n\n'
                                                 '4. Status messages are displayed at bottom\n'
-                                                'of the image; provide input based on them.',
+                                                'of the image; provide input based on them.\n\n'
+                                                '5. Close window to exit.',
                                                 fontsize=12, wrap=True, va='top', ha='left')
                 # window for displaying status
                 ui_status = ui.add_subplot(gs[2], sharey=ui_img)  # window for displaying status
                 ui_status.axis('off')
-
-                ui_button = ui.add_subplot(gs[3], sharex=ui_status, sharey=ui_instruct)
-                skip_button = Button(ui_button,'Skip Image')
-                skip_button.on_clicked(lambda x: continue))
-
 
                 # hold predictions from image
                 image_results = []
@@ -123,17 +120,18 @@ if __name__ == "__main__":
                         _ANNOinit = True
 
                     elif _ANNOinit:
-                        if not _ANNOwrong:
+                        if not _lastANNOwrong:
                             ui_msg = ui_status.text(0, 0, 'Continue annotation...', color='green', wrap=True,
                                                     fontsize=14, va='top', ha='left')
-                        elif _ANNOwrong:
+                        elif _lastANNOwrong:
                             ui_img.imshow(helpers.overlay_masks(image / 255, image_results))
-                            ui_msg = ui_status.text(0, 0, 'Ok. redo annotation...', color='green', wrap=True,
+                            ui_msg = ui_status.text(0, 0, 'Ok. try again...', color='green', wrap=True,
                                                     fontsize=14, va='top', ha='left')
-                            _ANNOwrong = False
+
 
                     # user input required
                     extreme_points_ori = np.array(plt.ginput(4, timeout=0, mouse_add=1)).astype(np.int)
+
                     ui_msg.remove()
 
                     # Crop image to the bounding box from the extreme points and resize
@@ -159,15 +157,40 @@ if __name__ == "__main__":
                     # Mask correct or not
                     image_results.append(result)  # add result to list of results even if incorrect for vis purposes
                     plot_mask = ui_img.imshow(helpers.overlay_masks(image / 255, image_results))
-                    ui_msg = ui_status.text(0, 0, 'Is the generated mask correct? Click mouse for yes, press r to '
-                                                  'redo', color='orange', wrap=True, fontsize=14, va='top', ha='left')
-                    not_anno_correct = plt.waitforbuttonpress()
-                    ui_msg.remove()
 
-                    if not_anno_correct:
-                        wrong_anno_mask = image_results.pop()
-                        _ANNOwrong = True
-                        continue
+                    if _lastANNOwrong:
+                        ui_msg = ui_status.text(0, 0, 'Is the mask now correct? Click left mouse for yes, press \'n\' '
+                                                      'for no.',
+                                                color='orange', wrap=True, fontsize=14, va='top', ha='left')
+                        usr_choice = plt.waitforbuttonpress()
+                        if usr_choice:
+                            ui_msg.remove()
+                            ui_msg = ui_status.text(0, 0, 'Okay, to try annotating one more time click left mouse or '
+                                                          'press \'n\' to skip to the new image',
+                                                    color='red', wrap=True, fontsize=14, va='top', ha='left')
+                            usr_choice_skip = plt.waitforbuttonpress()
+                            if usr_choice_skip:
+                                ui_msg.remove()
+                                _SKIP_IMAGE = True
+                                _lastANNOwrong = False
+                                break
+                            else:
+                                ui_msg.remove()
+                                wrong_anno_mask = image_results.pop()
+                                _lastANNOwrong = True
+                                continue
+                        else:
+                            _lastANNOwrong = False
+                            ui_msg.remove()
+                    else:
+                        ui_msg = ui_status.text(0, 0, 'Is the generated mask correct? Click mouse for yes, press r to '
+                                                  'redo', color='orange', wrap=True, fontsize=14, va='top', ha='left')
+                        not_anno_correct = plt.waitforbuttonpress()
+                        ui_msg.remove()
+                        if not_anno_correct:
+                            wrong_anno_mask = image_results.pop()
+                            _lastANNOwrong = True
+                            continue
 
                     # Add extreme points to show annotation done for the object
                     ui_img.plot(extreme_points_ori[:, 0], extreme_points_ori[:, 1], 'gx')
@@ -183,6 +206,10 @@ if __name__ == "__main__":
                                                       ' updated',
                                                 color='red', wrap=True, fontsize=14, va='top', ha='left')
                         break
+
+                if _SKIP_IMAGE:  # check if the break was initialised by skipping image
+                    tools.prog_update_skip(cfg, filename) # update prog file
+                    continue  # if so, then continue on to next image
 
                 # Show and save the generated masks
                 generated_mask = tools.get_img_segmasks(image, image_results)

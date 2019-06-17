@@ -77,7 +77,7 @@ def _update_filecache(config, filename):
     # make new dict based on files not in currently listed files (curr_files)
     new_files = [f for f in all_files if f not in curr_files]
     new_files.sort()  # sort the list
-    tmp_extra_dict = {f: False for f in new_files}
+    tmp_extra_dict = {f: 'no' for f in new_files}
     # append this new dict to current dict
     _progress['annotated'].update(tmp_extra_dict)
 
@@ -93,13 +93,13 @@ def _get_to_annotate(filename):
 
     files_anno = []  # to hold file names for files to be annotated
     for file, status in list(progress['annotated'].items()):
-        if status is False:
+        if status.lower() == 'no':
             files_anno.append(file)
 
     return files_anno
 
 
-def _update_prog(config, source_filename):
+def _prog_update_done(config, source_filename):
 
     # open and edit the progress file
     progressfile_path = path.join(config['required']['source'], config['admin']['progress_file'])
@@ -107,7 +107,22 @@ def _update_prog(config, source_filename):
     with io.open(progressfile_path, 'r') as progress_file:
         progress = yaml.load(progress_file)
 
-    progress['annotated'][source_filename] = True
+    progress['annotated'][source_filename] = 'yes'
+
+    # save update to progress file
+    with io.open(progressfile_path, 'w+') as progress_file:
+        yaml.dump(progress, progress_file)
+
+
+def prog_update_skip(config, source_filename):
+
+    # open and edit the progress file
+    progressfile_path = path.join(config['required']['source'], config['admin']['progress_file'])
+
+    with io.open(progressfile_path, 'r') as progress_file:
+        progress = yaml.load(progress_file)
+
+    progress['annotated'][source_filename] = 'skip'
 
     # save update to progress file
     with io.open(progressfile_path, 'w+') as progress_file:
@@ -124,7 +139,7 @@ def _make_progfile(config, filename):
                               "creation of progress file and exiting...")
 
     # make a temporary dict to store file names and annotation status
-    tmp_anno_dict = {f: False for f in files}
+    tmp_anno_dict = {f: 'no' for f in files}
     # make a temporary dict to get come info from the config file dict with the the same section headers
     tmp_info_dict = config['required']
 
@@ -267,6 +282,6 @@ def save_mask(mask_array, config, source_filename):
         np.save(mask_save_path, mask_array_mod)
 
     # now update the progress file
-    _update_prog(config, source_filename)
+    _prog_update_done(config, source_filename)
 
     return mask_array_mod
