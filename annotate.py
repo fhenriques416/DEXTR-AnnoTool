@@ -166,7 +166,7 @@ if __name__ == "__main__":
                         if usr_choice:
                             ui_msg.remove()
                             ui_msg = ui_status.text(0, 0, 'Okay, to try annotating one more time click left mouse or '
-                                                          'press \'n\' to skip to the new image',
+                                                          'press \'n\' to skip to the new image.',
                                                     color='red', wrap=True, fontsize=14, va='top', ha='left')
                             usr_choice_skip = plt.waitforbuttonpress()
                             if usr_choice_skip:
@@ -183,8 +183,9 @@ if __name__ == "__main__":
                             _lastANNOwrong = False
                             ui_msg.remove()
                     else:
-                        ui_msg = ui_status.text(0, 0, 'Is the generated mask correct? Click mouse for yes, press r to '
-                                                  'redo', color='orange', wrap=True, fontsize=14, va='top', ha='left')
+                        ui_msg = ui_status.text(0, 0, 'Is the generated mask correct? Click left mouse for yes, press'
+                                                      ' \'r\' to redo.',
+                                                color='orange', wrap=True, fontsize=14, va='top', ha='left')
                         not_anno_correct = plt.waitforbuttonpress()
                         ui_msg.remove()
                         if not_anno_correct:
@@ -195,8 +196,8 @@ if __name__ == "__main__":
                     # Add extreme points to show annotation done for the object
                     ui_img.plot(extreme_points_ori[:, 0], extreme_points_ori[:, 1], 'gx')
                     # Check what user wants to do next
-                    ui_msg = ui_status.text(0, 0, 'Next...Press d if done annotating this image or click mouse to '
-                                                  'continue annotating more objects in this image',
+                    ui_msg = ui_status.text(0, 0, 'Click left mouse to continue annotating this image or press \'d\''
+                                                  ' if done.',
                                             color='orange', wrap=True, fontsize=14, va='top', ha='left')
                     usr_choice = plt.waitforbuttonpress()
                     ui_msg.remove()
@@ -232,8 +233,8 @@ if __name__ == "__main__":
                 # subplot-3: status message
                 ui_res_status = ui.add_subplot(gs_res[2], sharey=ui_res_img)  # window for displaying status
                 ui_res_status.axis('off')
-                ui_res_msg = ui_res_status.text(0.0, 0.0, 'Annotate next image? Click mouse for yes, press e to exit'
-                                                          ' annotation and resume later',
+                ui_res_msg = ui_res_status.text(0.0, 0.0, 'Annotate next image? Click left mouse for yes or press \'e\''
+                                                          ' to exit annotation and resume later',
                                                 color='orange', wrap=True, fontsize=14, va='top', ha='left')
 
                 # user input required
