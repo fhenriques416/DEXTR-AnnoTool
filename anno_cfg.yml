@@ -6,8 +6,8 @@
 
 # Required parameters to be set by user
 required:
-  source: ./ims    # path to the dir containing images to be annotated
-  destination: ./ims/segMasks    # path to the dir where the generated masks should be saved
+  source: ./sample_images    # path to the dir containing images to be annotated
+  destination: ./sample_images/segMasks    # path to the dir where the generated masks should be saved
 
 # Optional parameters
 optional:
